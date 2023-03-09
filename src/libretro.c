@@ -566,10 +566,8 @@ void retro_set_environment(retro_environment_t cb)
       { NULL, 0 }
    };
 
-   // This seem to be broken right now, as info is NULL in retro_load_game
-   // even when we load a game via the frontend after booting to BASIC.
-   //bool yes = true;
-   //cb(RETRO_ENVIRONMENT_SET_SUPPORT_NO_GAME, (void*)&yes);
+   bool support_no_game = true;
+   cb(RETRO_ENVIRONMENT_SET_SUPPORT_NO_GAME, &support_no_game);
 
    cb(RETRO_ENVIRONMENT_SET_VARIABLES, (void*)core_vars);
    cb(RETRO_ENVIRONMENT_SET_CONTROLLER_INFO, (void*)ports);
@@ -692,7 +690,7 @@ bool retro_load_game(const struct retro_game_info *info)
 
    if (fuse_init(sizeof(argv) / sizeof(argv[0]), argv) == 0)
    {
-      if (info->size != 0)
+      if (info && info->size != 0)
       {
          tape_size = info->size;
          tape_data = malloc(tape_size);
